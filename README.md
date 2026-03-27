@@ -17,6 +17,21 @@ AI 이미지/영상 생성부터 스프라이트 시트 변환까지, 게임 개
 
 > Releases 페이지에서 원하는 버전을 선택할 수도 있습니다: [All Releases](https://github.com/boominkim0/sprite-studio/releases)
 
+### macOS 사용자 참고
+
+코드 서명이 되어 있지 않아 macOS Gatekeeper가 앱을 차단할 수 있습니다.
+"손상되었기 때문에 열 수 없습니다" 메시지가 나타나면 터미널에서 아래 명령어를 실행하세요:
+
+```bash
+xattr -rd com.apple.quarantine /path/to/Sprite\ Studio.app
+```
+
+또는 DMG 파일에 직접 적용:
+
+```bash
+xattr -rd com.apple.quarantine ~/Downloads/Sprite.Studio-1.0.0-arm64.dmg
+```
+
 ---
 
 ## Features
