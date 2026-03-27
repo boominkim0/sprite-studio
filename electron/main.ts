@@ -259,6 +259,16 @@ function registerIpcHandlers() {
         env.PYTHONPATH = libsDir + (env.PYTHONPATH ? (isWin ? ';' : ':') + env.PYTHONPATH : '')
       }
 
+      // Ensure common tool paths are in PATH (packaged app may not inherit shell PATH)
+      if (!isWin) {
+        const extraPaths = ['/opt/homebrew/bin', '/usr/local/bin', '/usr/bin']
+        const currentPath = env.PATH || ''
+        const missingPaths = extraPaths.filter(p => !currentPath.includes(p))
+        if (missingPaths.length > 0) {
+          env.PATH = currentPath + ':' + missingPaths.join(':')
+        }
+      }
+
       const args = [scriptPath, opts.videoPath, '-o', opts.outputDir]
       if (opts.fps) args.push('--fps', String(opts.fps))
       if (opts.bgColor) args.push('--bg-color', opts.bgColor)
