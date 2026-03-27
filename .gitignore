@@ -3,6 +3,7 @@ dist/
 dist-electron/
 release/
 python/venv/
+python/libs/
 python/__pycache__/
 python/src/__pycache__/
 *.pyc

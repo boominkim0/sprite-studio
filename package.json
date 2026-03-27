@@ -48,13 +48,7 @@
         "to": "python",
         "filter": [
           "**/*",
-          "!venv/**/pip*",
-          "!venv/**/setuptools*",
-          "!venv/**/wheel*",
-          "!venv/**/__pycache__/**",
-          "!venv/**/pip/**",
-          "!venv/**/setuptools/**",
-          "!venv/**/pkg_resources/**",
+          "!venv/**",
           "!**/__pycache__/**",
           "!*.pyc"
         ]

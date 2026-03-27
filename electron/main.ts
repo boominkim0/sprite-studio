@@ -235,13 +235,29 @@ function registerIpcHandlers() {
         : path.join(process.resourcesPath, 'python')
       const scriptPath = path.join(scriptDir, 'main.py')
 
-      // Resolve Python binary: venv differs by platform
+      // Resolve Python binary: prefer venv, then bundled libs + system python
       const isWin = process.platform === 'win32'
       const venvPython = isWin
         ? path.join(scriptDir, 'venv', 'Scripts', 'python.exe')
         : path.join(scriptDir, 'venv', 'bin', 'python3')
       const fallbackPython = isWin ? 'python' : 'python3'
-      const pythonBin = fs.existsSync(venvPython) ? venvPython : fallbackPython
+
+      // Check if venv python is a valid file (not a broken symlink)
+      let pythonBin = fallbackPython
+      try {
+        if (fs.existsSync(venvPython) && fs.statSync(fs.realpathSync(venvPython))) {
+          pythonBin = venvPython
+        }
+      } catch {
+        // Broken symlink or missing — use fallback
+      }
+
+      // Set PYTHONPATH to bundled libs directory if it exists
+      const libsDir = path.join(scriptDir, 'libs')
+      const env = { ...process.env }
+      if (fs.existsSync(libsDir)) {
+        env.PYTHONPATH = libsDir + (env.PYTHONPATH ? (isWin ? ';' : ':') + env.PYTHONPATH : '')
+      }
 
       const args = [scriptPath, opts.videoPath, '-o', opts.outputDir]
       if (opts.fps) args.push('--fps', String(opts.fps))
@@ -254,7 +270,7 @@ function registerIpcHandlers() {
 
       const proc = spawn(pythonBin, args, {
         cwd: scriptDir,
-        env: { ...process.env },
+        env,
       })
       let stdout = ''
       let stderr = ''
